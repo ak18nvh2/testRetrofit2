@@ -32,7 +32,7 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/btn_ReadData"
         app:layout_constraintBottom_toTopOf="@id/gl_01"
-        android:text="aaaaa"
+        android:text="response code:"
         android:textSize="20dp"
 
         >

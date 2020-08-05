@@ -39,7 +39,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(v: View?) {
         when(v){
             btn_ReadData -> {
-
+                tv_ResponseCode.text = "response code:"
                 RetrofitClient.instance.getEmployees().enqueue(object: Callback<ArrayList<FileJson>>{
 
                     override fun onFailure(call: Call<ArrayList<FileJson>>, t: Throwable) {
@@ -52,7 +52,7 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
                         response: Response<ArrayList<FileJson>>
                     ) {
 
-                            tv_ResponseCode.text = response.code().toString()
+                            tv_ResponseCode.text = "response code:"+response.code().toString()
                             val fileJson = response.body()
                             if(fileJson != null){
                                 list = fileJson[0].getData() as ArrayList<Employee>?
