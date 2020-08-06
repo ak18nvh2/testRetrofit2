@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".HomeActivity">
 
     <androidx.constraintlayout.widget.Guideline
         android:layout_width="wrap_content"
@@ -14,11 +14,11 @@
         app:layout_constraintGuide_percent="0.5"
         ></androidx.constraintlayout.widget.Guideline>
     <Button
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:id="@+id/btn_ReadData"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/btn_CreateNewEmployee"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/tv_ResponseCode"
         android:text="Read data"
@@ -46,5 +46,14 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@id/gl_01"
          />
-
+    <Button
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Create employee"
+        android:textAllCaps="false"
+        android:id="@+id/btn_CreateNewEmployee"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/btn_ReadData"
+        app:layout_constraintLeft_toRightOf="@id/btn_ReadData"
+        ></Button>
 </androidx.constraintlayout.widget.ConstraintLayout>

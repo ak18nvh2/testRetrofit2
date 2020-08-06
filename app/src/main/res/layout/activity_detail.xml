@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="30dp"
+    tools:context=".DetailActivity">
+
+    <ImageView
+        android:id="@+id/img_DetailAvatar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_launcher"
+        app:layout_constraintBottom_toTopOf="@id/tv_DetailID"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></ImageView>
+
+    <TextView
+        android:id="@+id/tv_DetailID"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="ID: 100"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toTopOf="@id/tv_DetailName"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img_DetailAvatar"></TextView>
+
+    <TextView
+        android:id="@+id/tv_DetailName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Name: Nguyen Trung Minh Hieu"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toTopOf="@id/tv_DetailAge"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_DetailID"></TextView>
+
+    <TextView
+        android:id="@+id/tv_DetailAge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Age: 20"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toTopOf="@id/tv_DetailSalary"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_DetailName"></TextView>
+
+    <TextView
+        android:id="@+id/tv_DetailSalary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Salary: 2000"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_DetailAge"></TextView>
+
+    <ImageView
+        android:id="@+id/btn_BackDetail"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/backbtn"
+        android:text="Back"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></ImageView>
+</androidx.constraintlayout.widget.ConstraintLayout>
