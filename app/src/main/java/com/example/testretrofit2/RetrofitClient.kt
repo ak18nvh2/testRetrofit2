@@ -14,7 +14,7 @@ object RetrofitClient {
         .writeTimeout(50000, TimeUnit.MILLISECONDS)
         .connectTimeout(50000, TimeUnit.MILLISECONDS)
         .retryOnConnectionFailure(true).build()
-    val instance : Api by lazy {
+    val instance: Api by lazy {
         val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .client(buider)
