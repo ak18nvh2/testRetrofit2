@@ -9,10 +9,11 @@ import androidx.recyclerview.widget.RecyclerView
 
 
 
-class EmployeeAdapter(var mContext : Context) : RecyclerView.Adapter<EmployeeAdapter.ViewHolder>() {
+class EmployeeAdapter(var mContext : Context, var iRecyclerViewWithHomeActivity: IRecyclerViewWithHomeActivity) : RecyclerView.Adapter<EmployeeAdapter.ViewHolder>() {
     private var list : ArrayList<Employee>?= ArrayList<Employee>()
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
-        val text : TextView = itemView.findViewById(R.id.tv_Text)
+        val id : TextView = itemView.findViewById(R.id.tv_Id)
+        val name : TextView = itemView.findViewById(R.id.tv_Name)
     }
     fun setList(list : ArrayList<Employee>){
         this.list = list
@@ -28,9 +29,18 @@ class EmployeeAdapter(var mContext : Context) : RecyclerView.Adapter<EmployeeAda
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.text.text = "ID : "+ list?.get(position)?.id +", name: "+ list?.get(position)?.employeeName + ", salary: "+ list?.get(position)
-            ?.employeeSalary +", age: "+ list?.get(position)?.employeeAge +", img: "+ list?.get(position)
-            ?.profileImage
-
+        holder.id.text = "ID: "+ list?.get(position)?.id
+        holder.name.text = "Name: "+list?.get(position)?.employeeName
+        holder.itemView.setOnClickListener(){
+            iRecyclerViewWithHomeActivity.doSomeThingOnClick(list?.get(position)!!)
+        }
+        holder.itemView.setOnLongClickListener(){
+            iRecyclerViewWithHomeActivity.doSomeThingOnLongClick(list?.get(position)!!)
+            return@setOnLongClickListener true
+        }
+    }
+    interface IRecyclerViewWithHomeActivity{
+        fun doSomeThingOnClick(employee: Employee)
+        fun doSomeThingOnLongClick(employee: Employee)
     }
 }

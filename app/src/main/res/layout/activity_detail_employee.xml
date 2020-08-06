@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".DetailEmployee">
+    <ImageView
+        android:id="@+id/img_Avatar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@mipmap/ic_launcher"
+        app:layout_constraintBottom_toTopOf="@id/edt_DetailName"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"></ImageView>
+
+    <TextView
+        android:id="@+id/tv_DetailName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
+        android:text="Name:"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="@id/edt_DetailName"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/edt_DetailName"></TextView>
+
+    <EditText
+        android:id="@+id/edt_DetailName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:hint="Type employee's name!"
+        app:layout_constraintBottom_toTopOf="@id/edt_DetailAge"
+        app:layout_constraintLeft_toRightOf="@id/tv_DetailName"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img_Avatar"></EditText>
+
+    <EditText
+        android:id="@+id/edt_DetailAge"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:hint="Type employee's age!"
+        app:layout_constraintBottom_toTopOf="@+id/edt_DetailSalary"
+        app:layout_constraintLeft_toRightOf="@id/tv_DetailAge"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edt_DetailName"></EditText>
+
+    <TextView
+        android:id="@+id/tv_DetailAge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
+        android:text="Age:"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="@id/edt_DetailAge"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/edt_DetailAge"></TextView>
+
+    <EditText
+        android:id="@+id/edt_DetailSalary"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="30dp"
+        android:hint="Type employee's salary!"
+        app:layout_constraintBottom_toTopOf="@id/btn_Save"
+        app:layout_constraintLeft_toRightOf="@id/tv_DetailSalary"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edt_DetailAge"></EditText>
+
+    <TextView
+        android:id="@+id/tv_DetailSalary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
+        android:text="Salary:"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="@id/edt_DetailSalary"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/edt_DetailSalary"></TextView>
+
+    <Button
+        android:id="@+id/btn_Save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Save"
+        android:textAllCaps="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/btn_Change"
+        app:layout_constraintTop_toBottomOf="@id/edt_DetailSalary"></Button>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Change"
+        android:id="@+id/btn_Change"
+        android:textAllCaps="false"
+        app:layout_constraintLeft_toRightOf="@id/btn_Save"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/btn_Save"
+        ></Button>
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cancel"
+        android:id="@+id/btn_Cancel"
+        android:textAllCaps="false"
+        app:layout_constraintLeft_toRightOf="@id/btn_Save"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/btn_Save"
+        ></Button>
+    <ImageView
+        android:id="@+id/btn_Back"
+        android:layout_width="30dp"
+        android:layout_height="wrap_content"
+        android:text="Back"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="10dp"
+        android:src="@drawable/backbtn"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        ></ImageView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
