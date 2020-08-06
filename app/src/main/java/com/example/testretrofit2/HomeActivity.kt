@@ -20,6 +20,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,
     EmployeeAdapter.IRecyclerViewWithHomeActivity {
     private var list: ArrayList<Employee>? = ArrayList<Employee>()
     private val REQUEST_HOME_TO_CREATE_OR_UPDATE = 10
+    private var fileJson: FileJson? = null
     var employeeAdapter: EmployeeAdapter? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,6 +40,9 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,
             btn_CreateNewEmployee -> {
                 var intent = Intent(this, CreateAndUpdateEmployee::class.java)
                 intent.putExtra("BUTTON", 2)
+                var bundle = Bundle()
+                bundle.putSerializable("FILEJSON", fileJson)
+                intent.putExtras(bundle)
                 startActivityForResult(intent, REQUEST_HOME_TO_CREATE_OR_UPDATE)
             }
             btn_ReadData -> {
@@ -61,7 +65,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,
 
             override fun onResponse(call: Call<FileJson>, response: Response<FileJson>) {
                 tv_ResponseCode.text = "response code: " + response.code().toString()
-                val fileJson = response.body()
+                fileJson = response.body()
                 if (response.isSuccessful) {
                     // Toast.makeText(applicationContext, "ok ${fileJson?.data}", Toast.LENGTH_SHORT).show()
                     list = fileJson?.data as ArrayList<Employee>?
@@ -113,7 +117,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_HOME_TO_CREATE_OR_UPDATE) {
             if (resultCode == Activity.RESULT_OK) {
-                Toast.makeText(this, "Lưu thành công", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Saved successfully!", Toast.LENGTH_SHORT).show()
                 readData()
             }
         }

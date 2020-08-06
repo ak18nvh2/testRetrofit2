@@ -19,6 +19,7 @@ import retrofit2.Response
 class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
     private var BUTTON_TYPE = 0 //  1 is change profile, 2 is create new employee
     private var employee: Employee? = null
+    private var fileJson: FileJson? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_update_employee)
@@ -40,9 +41,11 @@ class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
         BUTTON_TYPE = intent.getIntExtra("BUTTON", 0)
         var bundle = intent.extras
         if (bundle != null) {
-            this.employee = bundle?.getSerializable("EMPLOYEE2") as Employee?
             if (BUTTON_TYPE == 1) {
+                this.employee = bundle?.getSerializable("EMPLOYEE2") as Employee?
                 setDefaultInformation()
+            } else if(BUTTON_TYPE == 2){
+                this.fileJson = bundle?.getSerializable("FILEJSON") as FileJson?
             }
         }
     }
@@ -61,22 +64,23 @@ class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
                     this.employee?.employeeName = edt_InputName.text.toString()
                     this.employee?.employeeAge = edt_InputAge.text.toString().toInt()
                     this.employee?.employeeSalary = edt_InputSalary.text.toString().toInt()
-                    this.employee?.id = 1000
-                    this.employee?.profileImage = null
+                    this.employee?.id = null
+                    this.employee?.profileImage = ""
+                    var arrayList : ArrayList<Employee>? = this.fileJson?.data as ArrayList<Employee>?
+                    arrayList?.add(this.employee!!)
+                    this.fileJson?.data = arrayList
                     if( BUTTON_TYPE == 2){
-                        RetrofitClient.instance.insertEmployee(this.employee?.id, this.employee?.employeeName,
-                                                                this.employee?.employeeSalary, this.employee?.employeeAge,
-                                                                this.employee?.profileImage).enqueue(object: Callback<Employee>{
-                            override fun onFailure(call: Call<Employee>, t: Throwable) {
+                        RetrofitClient.instance.insertEmployee(this.fileJson!!).enqueue(object: Callback<FileJson>{
+                            override fun onFailure(call: Call<FileJson>, t: Throwable) {
                                 Toast.makeText(applicationContext, "k luu duoc ${t.message}", Toast.LENGTH_LONG).show()
                             }
 
                             override fun onResponse(
-                                call: Call<Employee>,
-                                response: Response<Employee>
+                                call: Call<FileJson>,
+                                response: Response<FileJson>
                             ) {
                                 if(response.isSuccessful){
-                                    Toast.makeText(applicationContext, "luu thanh cong ${response.body()?.employeeName}", Toast.LENGTH_LONG)
+                                    Toast.makeText(applicationContext, "luu thanh cong ${response.body()?.message}", Toast.LENGTH_LONG)
                                         .show()
 //                                    val intent: Intent = Intent()
 //                                    setResult(Activity.RESULT_OK, intent)
