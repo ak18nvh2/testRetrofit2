@@ -6,7 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import java.util.zip.Inflater
+
 
 
 class EmployeeAdapter(var mContext : Context) : RecyclerView.Adapter<EmployeeAdapter.ViewHolder>() {
@@ -28,9 +28,9 @@ class EmployeeAdapter(var mContext : Context) : RecyclerView.Adapter<EmployeeAda
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.text.text = "ID : "+ list?.get(position)?.getId() +", name: "+ list?.get(position)?.getEmployeeName() + ", salary: "+ list?.get(position)
-            ?.getEmployeeSalary() +", age: "+ list?.get(position)?.getEmployeeAge() +", img: "+ list?.get(position)
-            ?.getProfileImage()
+        holder.text.text = "ID : "+ list?.get(position)?.id +", name: "+ list?.get(position)?.employeeName + ", salary: "+ list?.get(position)
+            ?.employeeSalary +", age: "+ list?.get(position)?.employeeAge +", img: "+ list?.get(position)
+            ?.profileImage
 
     }
 }

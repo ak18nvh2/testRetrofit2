@@ -24,10 +24,10 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
         employeeAdapter = EmployeeAdapter(this)
 
         var employee = Employee()
-        employee.setEmployeeAge(10)
-        employee.setEmployeeName("a")
-        employee.setEmployeeSalary(100000)
-        employee.setId(100)
+        employee.employeeAge= 10
+        employee.employeeName= "a"
+        employee.employeeSalary = 100000
+        employee.id = 100
         list?.add(employee)
         rvEmployees.setHasFixedSize(true)
         rvEmployees.layoutManager = LinearLayoutManager(this)
@@ -37,16 +37,24 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
-        when(v){
+        when (v) {
             btn_ReadData -> {
                 tv_ResponseCode.text = "response codee: "
                 RetrofitClient.instance.getEmployees().enqueue(object: Callback<FileJson>{
                     override fun onFailure(call: Call<FileJson>, t: Throwable) {
-
+                        Toast.makeText(applicationContext, "co van de ${t.message}", Toast.LENGTH_SHORT).show()
                     }
 
                     override fun onResponse(call: Call<FileJson>, response: Response<FileJson>) {
-                        
+                        tv_ResponseCode.text = "response code: "+response.code().toString()
+                        val fileJson = response.body()
+                        if (response.isSuccessful){
+                            Toast.makeText(applicationContext, "ok ${fileJson?.data}", Toast.LENGTH_SHORT).show()
+                            list = fileJson?.data as ArrayList<Employee>?
+                            employeeAdapter?.setList(list!!)
+                        } else {
+                            Toast.makeText(applicationContext, "lam gi co gi,"+response.code().toString(), Toast.LENGTH_SHORT).show()
+                        }
                     }
 
 
