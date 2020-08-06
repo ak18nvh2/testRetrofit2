@@ -39,28 +39,14 @@ class MainActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(v: View?) {
         when(v){
             btn_ReadData -> {
-                tv_ResponseCode.text = "response code:"
-                RetrofitClient.instance.getEmployees().enqueue(object: Callback<ArrayList<FileJson>>{
+                tv_ResponseCode.text = "response codee: "
+                RetrofitClient.instance.getEmployees().enqueue(object: Callback<FileJson>{
+                    override fun onFailure(call: Call<FileJson>, t: Throwable) {
 
-                    override fun onFailure(call: Call<ArrayList<FileJson>>, t: Throwable) {
-                        Toast.makeText(applicationContext, "co van de", Toast.LENGTH_SHORT).show()
                     }
 
-                    @SuppressLint("ResourceAsColor")
-                    override fun onResponse(
-                        call: Call<ArrayList<FileJson>>,
-                        response: Response<ArrayList<FileJson>>
-                    ) {
-
-                            tv_ResponseCode.text = "response code:"+response.code().toString()
-                            val fileJson = response.body()
-                            if(fileJson != null){
-                                list = fileJson[0].getData() as ArrayList<Employee>?
-                                employeeAdapter?.setList(list!!)
-                                tv_ResponseCode.text = fileJson[0].getStatus()
-                            } else {
-                                Toast.makeText(applicationContext, "Lam gi co gi, "+ response.code().toString(), Toast.LENGTH_SHORT).show()
-                            }
+                    override fun onResponse(call: Call<FileJson>, response: Response<FileJson>) {
+                        
                     }
 
 
