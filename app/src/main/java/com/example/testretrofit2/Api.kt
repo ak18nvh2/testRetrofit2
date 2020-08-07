@@ -18,6 +18,20 @@ interface Api {
     )
     @POST("create")
     fun insertEmployee(@Body employee: Employee): Call<Employee>
+
+    @FormUrlEncoded
+    @PUT("update/{id}")
+    fun updateEmployee(
+        @Path("id") id: Int,
+        @Field("name") employeeName: String,
+        @Field("salary") employeeSalary: Int,
+        @Field("age") employeeAge: Int
+    ) : Call<Employee>
+
+    @DELETE("/delete/{id}")
+    fun deleteEmployee(@Path("id") id: Int): Call<Unit>
+
+
 }
 
 //fun insertEmployee(@Field("id") id : String,

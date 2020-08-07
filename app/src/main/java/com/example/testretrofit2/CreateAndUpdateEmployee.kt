@@ -45,7 +45,7 @@ class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
             if (BUTTON_TYPE == 1) {
                 this.employee = bundle?.getSerializable("EMPLOYEE2") as Employee
                 setDefaultInformation()
-            } else if(BUTTON_TYPE == 2){
+            } else if (BUTTON_TYPE == 2) {
                 this.fileJson = bundle?.getSerializable("FILEJSON") as FileJson?
             }
         }
@@ -58,20 +58,67 @@ class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
                     .noAutoDismiss()
                     .customView(R.layout.dialog_yes_no)
                 dialog.tv_TitleOfCustomDialogConfirm.text = "Are you sure save this?"
-                dialog.btn_CancelDialogConfirm.setOnClickListener(){
+                dialog.btn_CancelDialogConfirm.setOnClickListener() {
                     dialog.dismiss()
                 }
-                dialog.btn_AcceptDiaLogConFirm.setOnClickListener(){
+                dialog.btn_AcceptDiaLogConFirm.setOnClickListener() {
                     this.employee.employeeName = edt_InputName.text.toString()
                     this.employee.employeeAge = edt_InputAge.text.toString().toInt()
                     this.employee.employeeSalary = edt_InputSalary.text.toString().toInt()
-                    this.employee.profileImage = ""
-                    this.employee.id = null
 
-                    if( BUTTON_TYPE == 2){
-                        RetrofitClient.instance.insertEmployee(this.employee).enqueue(object: Callback<Employee>{
+                    if (BUTTON_TYPE == 2) {
+                        RetrofitClient.instance.insertEmployee(this.employee)
+                            .enqueue(object : Callback<Employee> {
+                                override fun onFailure(call: Call<Employee>, t: Throwable) {
+                                    Toast.makeText(
+                                        applicationContext,
+                                        "k luu duoc ${t.message}",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                    Log.d("AAAA", t.message)
+                                }
+
+                                override fun onResponse(
+                                    call: Call<Employee>,
+                                    response: Response<Employee>
+                                ) {
+                                    if (response.isSuccessful) {
+                                        Toast.makeText(
+                                            applicationContext,
+                                            "luu thanh cong ${response.body()?.employeeName}",
+                                            Toast.LENGTH_LONG
+                                        )
+                                            .show()
+//                                    val intent: Intent = Intent()
+//                                    setResult(Activity.RESULT_OK, intent)
+//                                    finish()
+                                    } else {
+                                        Toast.makeText(
+                                            applicationContext,
+                                            "k thanh cong ${response.message()}",
+                                            Toast.LENGTH_LONG
+                                        )
+                                            .show()
+                                    }
+                                }
+
+                            })
+
+
+                    } else if (BUTTON_TYPE == 1) {
+                        Toast.makeText(this, "day la save cua update", Toast.LENGTH_SHORT).show()
+                        RetrofitClient.instance.updateEmployee(
+                            this.employee.id!!,
+                            this.employee.employeeName!!,
+                            this.employee.employeeSalary!!,
+                            this.employee.employeeAge!!
+                         ).enqueue(object : Callback<Employee> {
                             override fun onFailure(call: Call<Employee>, t: Throwable) {
-                                Toast.makeText(applicationContext, "k luu duoc ${t.message}", Toast.LENGTH_LONG).show()
+                                Toast.makeText(
+                                    applicationContext,
+                                    "k luu duoc ${t.message}",
+                                    Toast.LENGTH_LONG
+                                ).show()
                                 Log.d("AAAA", t.message)
                             }
 
@@ -79,24 +126,27 @@ class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
                                 call: Call<Employee>,
                                 response: Response<Employee>
                             ) {
-                                if(response.isSuccessful){
-                                    Toast.makeText(applicationContext, "luu thanh cong ${response.body()?.employeeName}", Toast.LENGTH_LONG)
+                                if (response.isSuccessful) {
+                                    Toast.makeText(
+                                        applicationContext,
+                                        "luu thanh cong ${response.body()?.employeeName}",
+                                        Toast.LENGTH_LONG
+                                    )
                                         .show()
-
 //                                    val intent: Intent = Intent()
 //                                    setResult(Activity.RESULT_OK, intent)
 //                                    finish()
                                 } else {
-                                    Toast.makeText(applicationContext, "k thanh cong ${response.message()}", Toast.LENGTH_LONG)
+                                    Toast.makeText(
+                                        applicationContext,
+                                        "k thanh cong ${response.message()}",
+                                        Toast.LENGTH_LONG
+                                    )
                                         .show()
                                 }
                             }
 
                         })
-
-
-                    } else if( BUTTON_TYPE == 1){
-                        Toast.makeText(this, "day la save cua update", Toast.LENGTH_SHORT).show()
                     }
                     dialog.dismiss()
                 }

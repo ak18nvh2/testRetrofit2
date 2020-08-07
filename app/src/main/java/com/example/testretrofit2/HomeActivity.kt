@@ -98,7 +98,20 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,
             dialog.dismiss()
         }
         dialog.btn_Delete.setOnClickListener() {
-            Toast.makeText(applicationContext, "xoa ne", Toast.LENGTH_SHORT).show()
+            RetrofitClient.instance.deleteEmployee(employee.id!!).enqueue(object: Callback<Unit>{
+                override fun onFailure(call: Call<Unit>, t: Throwable) {
+                    Toast.makeText(applicationContext, "fail ${t.message}", Toast.LENGTH_SHORT).show()
+                }
+
+                override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+                    if(response.isSuccessful){
+                        Toast.makeText(applicationContext, "xoa thanh cong", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(applicationContext, "k xoa duoc ${response.message()} ${response.code()}", Toast.LENGTH_SHORT).show()
+                    }
+                }
+
+            })
             dialog.dismiss()
         }
         dialog.btn_Change.setOnClickListener() {
