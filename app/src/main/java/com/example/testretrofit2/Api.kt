@@ -16,7 +16,7 @@ interface Api {
         value = ["Accept: application/json",
             "Content-type:application/json"]
     )
-    @POST("create/")
+    @POST("create")
     fun insertEmployee(@Body employee: Employee): Call<Employee>
 }
 

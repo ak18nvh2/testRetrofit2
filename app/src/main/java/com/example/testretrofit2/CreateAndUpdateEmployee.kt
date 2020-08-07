@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
@@ -18,7 +19,7 @@ import retrofit2.Response
 
 class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
     private var BUTTON_TYPE = 0 //  1 is change profile, 2 is create new employee
-    private var employee: Employee? = null
+    private var employee: Employee = Employee()
     private var fileJson: FileJson? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +43,7 @@ class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
         var bundle = intent.extras
         if (bundle != null) {
             if (BUTTON_TYPE == 1) {
-                this.employee = bundle?.getSerializable("EMPLOYEE2") as Employee?
+                this.employee = bundle?.getSerializable("EMPLOYEE2") as Employee
                 setDefaultInformation()
             } else if(BUTTON_TYPE == 2){
                 this.fileJson = bundle?.getSerializable("FILEJSON") as FileJson?
@@ -61,16 +62,17 @@ class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
                     dialog.dismiss()
                 }
                 dialog.btn_AcceptDiaLogConFirm.setOnClickListener(){
-                    this.employee?.employeeName = edt_InputName.text.toString()
-                    this.employee?.employeeAge = edt_InputAge.text.toString().toInt()
-                    this.employee?.employeeSalary = edt_InputSalary.text.toString().toInt()
-                    this.employee?.profileImage = ""
-                    this.employee?.id = null
+                    this.employee.employeeName = edt_InputName.text.toString()
+                    this.employee.employeeAge = edt_InputAge.text.toString().toInt()
+                    this.employee.employeeSalary = edt_InputSalary.text.toString().toInt()
+                    this.employee.profileImage = ""
+                    this.employee.id = null
 
                     if( BUTTON_TYPE == 2){
-                        RetrofitClient.instance.insertEmployee(this.employee!!).enqueue(object: Callback<Employee>{
+                        RetrofitClient.instance.insertEmployee(this.employee).enqueue(object: Callback<Employee>{
                             override fun onFailure(call: Call<Employee>, t: Throwable) {
                                 Toast.makeText(applicationContext, "k luu duoc ${t.message}", Toast.LENGTH_LONG).show()
+                                Log.d("AAAA", t.message)
                             }
 
                             override fun onResponse(
@@ -80,11 +82,12 @@ class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
                                 if(response.isSuccessful){
                                     Toast.makeText(applicationContext, "luu thanh cong ${response.body()?.employeeName}", Toast.LENGTH_LONG)
                                         .show()
+
 //                                    val intent: Intent = Intent()
 //                                    setResult(Activity.RESULT_OK, intent)
 //                                    finish()
                                 } else {
-                                    Toast.makeText(applicationContext, "k thanh cong ${response.message()}", Toast.LENGTH_SHORT)
+                                    Toast.makeText(applicationContext, "k thanh cong ${response.message()}", Toast.LENGTH_LONG)
                                         .show()
                                 }
                             }
