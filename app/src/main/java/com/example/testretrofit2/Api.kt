@@ -17,7 +17,7 @@ interface Api {
             "Content-type:application/json"]
     )
     @POST("create/")
-    fun insertEmployee(@Body fileJson: FileJson): Call<FileJson>
+    fun insertEmployee(@Body employee: Employee): Call<Employee>
 }
 
 //fun insertEmployee(@Field("id") id : String,

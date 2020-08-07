@@ -64,23 +64,21 @@ class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
                     this.employee?.employeeName = edt_InputName.text.toString()
                     this.employee?.employeeAge = edt_InputAge.text.toString().toInt()
                     this.employee?.employeeSalary = edt_InputSalary.text.toString().toInt()
-                    this.employee?.id = null
                     this.employee?.profileImage = ""
-                    var arrayList : ArrayList<Employee>? = this.fileJson?.data as ArrayList<Employee>?
-                    arrayList?.add(this.employee!!)
-                    this.fileJson?.data = arrayList
+                    this.employee?.id = null
+
                     if( BUTTON_TYPE == 2){
-                        RetrofitClient.instance.insertEmployee(this.fileJson!!).enqueue(object: Callback<FileJson>{
-                            override fun onFailure(call: Call<FileJson>, t: Throwable) {
+                        RetrofitClient.instance.insertEmployee(this.employee!!).enqueue(object: Callback<Employee>{
+                            override fun onFailure(call: Call<Employee>, t: Throwable) {
                                 Toast.makeText(applicationContext, "k luu duoc ${t.message}", Toast.LENGTH_LONG).show()
                             }
 
                             override fun onResponse(
-                                call: Call<FileJson>,
-                                response: Response<FileJson>
+                                call: Call<Employee>,
+                                response: Response<Employee>
                             ) {
                                 if(response.isSuccessful){
-                                    Toast.makeText(applicationContext, "luu thanh cong ${response.body()?.message}", Toast.LENGTH_LONG)
+                                    Toast.makeText(applicationContext, "luu thanh cong ${response.body()?.employeeName}", Toast.LENGTH_LONG)
                                         .show()
 //                                    val intent: Intent = Intent()
 //                                    setResult(Activity.RESULT_OK, intent)
