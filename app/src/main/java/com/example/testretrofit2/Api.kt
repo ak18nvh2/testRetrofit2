@@ -28,7 +28,7 @@ interface Api {
         @Field("age") employeeAge: Int
     ) : Call<Employee>
 
-    @DELETE("/delete/{id}")
+    @DELETE("delete/{id}")
     fun deleteEmployee(@Path("id") id: Int): Call<Unit>
 
 

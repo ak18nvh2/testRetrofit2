@@ -10,6 +10,7 @@ import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
 import kotlinx.android.synthetic.main.activity_create_update_employee.*
+import kotlinx.android.synthetic.main.dialog_processbar.*
 import kotlinx.android.synthetic.main.dialog_select.*
 import kotlinx.android.synthetic.main.dialog_yes_no.*
 import kotlinx.android.synthetic.main.dialog_yes_no.tv_TitleOfCustomDialogConfirm
@@ -107,25 +108,41 @@ class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
 
                     } else if (BUTTON_TYPE == 1) {
                         Toast.makeText(this, "day la save cua update", Toast.LENGTH_SHORT).show()
-                        RetrofitClient.instance.updateEmployee(
+                        val dialog = MaterialDialog(this)
+                            .noAutoDismiss()
+                            .customView(R.layout.dialog_processbar)
+                        dialog.show()
+                        val call = RetrofitClient.instance.updateEmployee(
                             this.employee.id!!,
                             this.employee.employeeName!!,
                             this.employee.employeeSalary!!,
                             this.employee.employeeAge!!
-                         ).enqueue(object : Callback<Employee> {
+                        )
+                        dialog.btn_CancelUpdate.setOnClickListener(){
+                            call.cancel()
+                        }
+                        call.enqueue(object : Callback<Employee> {
                             override fun onFailure(call: Call<Employee>, t: Throwable) {
-                                Toast.makeText(
-                                    applicationContext,
-                                    "k luu duoc ${t.message}",
-                                    Toast.LENGTH_LONG
-                                ).show()
-                                Log.d("AAAA", t.message)
+                                dialog.dismiss()
+                                if (call.isCanceled) {
+                                    Toast.makeText(applicationContext, "Cancel successful!", Toast.LENGTH_SHORT)
+                                        .show()
+                                } else {
+                                    Toast.makeText(
+                                        applicationContext,
+                                        "k luu duoc ${t.message}",
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                    Log.d("AAAA", t.message)
+                                }
+
                             }
 
                             override fun onResponse(
                                 call: Call<Employee>,
                                 response: Response<Employee>
                             ) {
+                                dialog.dismiss()
                                 if (response.isSuccessful) {
                                     Toast.makeText(
                                         applicationContext,
@@ -137,6 +154,7 @@ class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
 //                                    setResult(Activity.RESULT_OK, intent)
 //                                    finish()
                                 } else {
+                                    dialog.dismiss()
                                     Toast.makeText(
                                         applicationContext,
                                         "k thanh cong ${response.message()}",
