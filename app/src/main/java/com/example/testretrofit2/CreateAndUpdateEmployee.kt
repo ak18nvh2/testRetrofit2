@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.WindowManager
 import android.widget.Toast
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.customview.customView
@@ -58,6 +59,7 @@ class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
                 val dialog = MaterialDialog(this)
                     .noAutoDismiss()
                     .customView(R.layout.dialog_yes_no)
+                dialog.setCancelable(false)
                 dialog.tv_TitleOfCustomDialogConfirm.text = "Are you sure save this?"
                 dialog.btn_CancelDialogConfirm.setOnClickListener() {
                     dialog.dismiss()
@@ -111,23 +113,34 @@ class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
                         val dialog = MaterialDialog(this)
                             .noAutoDismiss()
                             .customView(R.layout.dialog_processbar)
+                        dialog.setCancelable(false)
                         dialog.show()
+                        window.setFlags(
+                            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+                        )
                         val call = RetrofitClient.instance.updateEmployee(
                             this.employee.id!!,
                             this.employee.employeeName!!,
                             this.employee.employeeSalary!!,
                             this.employee.employeeAge!!
                         )
-                        dialog.btn_CancelUpdate.setOnClickListener(){
+                        dialog.btn_CancelUpdate.setOnClickListener() {
                             call.cancel()
                         }
                         call.enqueue(object : Callback<Employee> {
                             override fun onFailure(call: Call<Employee>, t: Throwable) {
                                 dialog.dismiss()
                                 if (call.isCanceled) {
-                                    Toast.makeText(applicationContext, "Cancel successful!", Toast.LENGTH_SHORT)
+                                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                                    Toast.makeText(
+                                        applicationContext,
+                                        "Cancel successful!",
+                                        Toast.LENGTH_SHORT
+                                    )
                                         .show()
                                 } else {
+                                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                                     Toast.makeText(
                                         applicationContext,
                                         "k luu duoc ${t.message}",
@@ -144,6 +157,7 @@ class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
                             ) {
                                 dialog.dismiss()
                                 if (response.isSuccessful) {
+                                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                                     Toast.makeText(
                                         applicationContext,
                                         "luu thanh cong ${response.body()?.employeeName}",
@@ -154,6 +168,7 @@ class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
 //                                    setResult(Activity.RESULT_OK, intent)
 //                                    finish()
                                 } else {
+                                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                                     dialog.dismiss()
                                     Toast.makeText(
                                         applicationContext,

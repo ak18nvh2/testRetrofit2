@@ -96,7 +96,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,
         val dialog = MaterialDialog(this)
             .noAutoDismiss()
             .customView(R.layout.dialog_select)
-
+        dialog.setCancelable(false)
 
         dialog.btn_CancelDialog.setOnClickListener() {
             dialog.dismiss()
