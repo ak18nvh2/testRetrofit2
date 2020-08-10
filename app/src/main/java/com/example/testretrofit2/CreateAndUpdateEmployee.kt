@@ -70,43 +70,22 @@ class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
                     this.employee.employeeSalary = edt_InputSalary.text.toString().toInt()
 
                     if (BUTTON_TYPE == 2) {
-                        RetrofitClient.instance.insertEmployee(this.employee)
-                            .enqueue(object : Callback<Employee> {
-                                override fun onFailure(call: Call<Employee>, t: Throwable) {
-                                    Toast.makeText(
-                                        applicationContext,
-                                        "k luu duoc ${t.message}",
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                    Log.d("AAAA", t.message)
+                     val callInsert =   RetrofitClient.instance.insertEmployee(this.employee)
+                        callInsert.enqueue(object: Callback<FileJson2>{
+                            override fun onFailure(call: Call<FileJson2>, t: Throwable) {
+                                Log.d("AAAAA", t.message)
+                            }
+                            override fun onResponse(
+                                call: Call<FileJson2>,
+                                response: Response<FileJson2>
+                            ) {
+                                if(response.isSuccessful){
+                                    Log.d("AAAAA",response.body()?.message)
+                                } else {
+                                    Log.d("AAAAAA",response.code().toString() + response.message().toString())
                                 }
-
-                                override fun onResponse(
-                                    call: Call<Employee>,
-                                    response: Response<Employee>
-                                ) {
-                                    if (response.isSuccessful) {
-                                        Toast.makeText(
-                                            applicationContext,
-                                            "luu thanh cong ${response.body()?.employeeName}",
-                                            Toast.LENGTH_LONG
-                                        )
-                                            .show()
-//                                    val intent: Intent = Intent()
-//                                    setResult(Activity.RESULT_OK, intent)
-//                                    finish()
-                                    } else {
-                                        Toast.makeText(
-                                            applicationContext,
-                                            "k thanh cong ${response.message()}",
-                                            Toast.LENGTH_LONG
-                                        )
-                                            .show()
-                                    }
-                                }
-
-                            })
-
+                            }
+                        })
 
                     } else if (BUTTON_TYPE == 1) {
                         Toast.makeText(this, "day la save cua update", Toast.LENGTH_SHORT).show()
@@ -128,10 +107,11 @@ class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
                         dialog.btn_CancelUpdate.setOnClickListener() {
                             call.cancel()
                         }
-                        call.enqueue(object : Callback<Employee> {
-                            override fun onFailure(call: Call<Employee>, t: Throwable) {
+                        call.enqueue(object : Callback<FileJson2> {
+                            override fun onFailure(call: Call<FileJson2>, t: Throwable) {
                                 dialog.dismiss()
                                 if (call.isCanceled) {
+
                                     window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                                     Toast.makeText(
                                         applicationContext,
@@ -150,17 +130,14 @@ class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
                                 }
 
                             }
-
-                            override fun onResponse(
-                                call: Call<Employee>,
-                                response: Response<Employee>
-                            ) {
+                            override fun onResponse(call: Call<FileJson2>, response: Response<FileJson2>) {
                                 dialog.dismiss()
                                 if (response.isSuccessful) {
+                                    Log.d("AAAAA",response.body()?.message)
                                     window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                                     Toast.makeText(
                                         applicationContext,
-                                        "luu thanh cong ${response.body()?.employeeName}",
+                                        "luu thanh cong ${response.body()?.message}",
                                         Toast.LENGTH_LONG
                                     )
                                         .show()
@@ -168,6 +145,7 @@ class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
 //                                    setResult(Activity.RESULT_OK, intent)
 //                                    finish()
                                 } else {
+                                    Log.d("AAAAAA",response.code().toString() + response.message().toString())
                                     window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                                     dialog.dismiss()
                                     Toast.makeText(

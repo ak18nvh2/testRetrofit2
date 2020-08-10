@@ -17,8 +17,12 @@ interface Api {
             "Content-type:application/json"]
     )
     @POST("create")
-    fun insertEmployee(@Body employee: Employee): Call<Employee>
+    fun insertEmployee(@Body employee: Employee): Call<FileJson2>
 
+    @Headers(
+        value = ["Accept: application/json",
+            "Content-type:application/json"]
+    )
     @FormUrlEncoded
     @PUT("update/{id}")
     fun updateEmployee(
@@ -26,10 +30,14 @@ interface Api {
         @Field("name") employeeName: String,
         @Field("salary") employeeSalary: Int,
         @Field("age") employeeAge: Int
-    ) : Call<Employee>
+    ) : Call<FileJson2>
 
+    @Headers(
+        value = ["Accept: application/json",
+            "Content-type:application/json"]
+    )
     @DELETE("delete/{id}")
-    fun deleteEmployee(@Path("id") id: Int): Call<Unit>
+    fun deleteEmployee(@Path("id") id: Int): Call<FileJson3>
 
 
 }

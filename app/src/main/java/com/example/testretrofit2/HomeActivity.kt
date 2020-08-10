@@ -5,6 +5,7 @@ import android.content.Intent
 import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
@@ -103,18 +104,21 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,
         }
         dialog.btn_Delete.setOnClickListener() {
             window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-            RetrofitClient.instance.deleteEmployee(employee.id!!).enqueue(object: Callback<Unit>{
+            RetrofitClient.instance.deleteEmployee(employee.id!!).enqueue(object: Callback<FileJson3>{
 
-                override fun onFailure(call: Call<Unit>, t: Throwable) {
+                override fun onFailure(call: Call<FileJson3>, t: Throwable) {
                     window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                     Toast.makeText(applicationContext, "fail ${t.message}", Toast.LENGTH_SHORT).show()
+                    Log.d("AAAAAADelete",t.message)
                 }
 
-                override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+                override fun onResponse(call: Call<FileJson3>, response: Response<FileJson3>) {
                     if(response.isSuccessful){
+                        Log.d("AAAAAADelete",response.body()?.message)
                         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                         Toast.makeText(applicationContext, "xoa thanh cong", Toast.LENGTH_SHORT).show()
                     } else {
+                        Log.d("AAAAAADelete",response.message())
                         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                         Toast.makeText(applicationContext, "k xoa duoc ${response.message()} ${response.code()}", Toast.LENGTH_SHORT).show()
                     }
