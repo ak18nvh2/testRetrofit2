@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit
 object RetrofitClient {
     private const val BASE_URL = "http://dummy.restapiexample.com/api/v1/"
 
-    val buider = OkHttpClient.Builder()
+    private val builder = OkHttpClient.Builder()
         .readTimeout(50000, TimeUnit.MILLISECONDS)
         .writeTimeout(50000, TimeUnit.MILLISECONDS)
         .connectTimeout(50000, TimeUnit.MILLISECONDS)
@@ -17,7 +17,7 @@ object RetrofitClient {
     val instance : Api by lazy {
         val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
-            .client(buider)
+            .client(builder)
             .addConverterFactory(GsonConverterFactory.create())
             .build()
         retrofit.create(Api::class.java)

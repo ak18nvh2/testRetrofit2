@@ -17,5 +17,7 @@ class FileJson2 : Serializable {
     @Expose
     var message: String? = null
 
-
+    override fun toString(): String {
+        return this.data?.id.toString() + " " + this.data?.employeeName + " " + this.data?.employeeAge + " " + this.data?.employeeSalary
+    }
 }

@@ -22,7 +22,6 @@ import retrofit2.Response
 class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
     private var BUTTON_TYPE = 0 //  1 is change profile, 2 is create new employee
     private var employee: Employee = Employee()
-    private var fileJson: FileJson? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_create_update_employee)
@@ -31,9 +30,9 @@ class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
 
 
     private fun setDefaultInformation() {
-        edt_InputAge.setText(employee?.employeeAge?.toString())
-        edt_InputName.setText(employee?.employeeName)
-        edt_InputSalary.setText(employee?.employeeSalary?.toString())
+        edt_InputAge.setText(employee.employeeAge?.toString())
+        edt_InputName.setText(employee.employeeName)
+        edt_InputSalary.setText(employee.employeeSalary?.toString())
     }
 
     private fun init() {
@@ -45,10 +44,8 @@ class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
         var bundle = intent.extras
         if (bundle != null) {
             if (BUTTON_TYPE == 1) {
-                this.employee = bundle?.getSerializable("EMPLOYEE2") as Employee
+                this.employee = bundle.getSerializable("EMPLOYEE2") as Employee
                 setDefaultInformation()
-            } else if (BUTTON_TYPE == 2) {
-                this.fileJson = bundle?.getSerializable("FILEJSON") as FileJson?
             }
         }
     }
@@ -56,48 +53,58 @@ class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
     override fun onClick(v: View?) {
         when (v) {
             btn_Save -> {
-                val dialog = MaterialDialog(this)
+                val dialogYesNo = MaterialDialog(this)
                     .noAutoDismiss()
                     .customView(R.layout.dialog_yes_no)
-                dialog.setCancelable(false)
-                dialog.tv_TitleOfCustomDialogConfirm.text = "Are you sure save this?"
-                dialog.btn_CancelDialogConfirm.setOnClickListener() {
-                    dialog.dismiss()
+                dialogYesNo.show()
+                dialogYesNo.setCancelable(false)
+                dialogYesNo.tv_TitleOfCustomDialogConfirm.text = "Are you sure save this?"
+                dialogYesNo.btn_CancelDialogConfirm.setOnClickListener() {
+                    dialogYesNo.dismiss()
                 }
-                dialog.btn_AcceptDiaLogConFirm.setOnClickListener() {
+                dialogYesNo.btn_AcceptDiaLogConFirm.setOnClickListener() {
                     this.employee.employeeName = edt_InputName.text.toString()
                     this.employee.employeeAge = edt_InputAge.text.toString().toInt()
                     this.employee.employeeSalary = edt_InputSalary.text.toString().toInt()
+                    dialogYesNo.dismiss()
 
-                    if (BUTTON_TYPE == 2) {
+                    if (BUTTON_TYPE == 2) {//2 is create new employee
                      val callInsert =   RetrofitClient.instance.insertEmployee(this.employee)
+                        val dialog = MaterialDialog(this)
+                            .noAutoDismiss()
+                            .customView(R.layout.dialog_processbar)
+                        dialog.show()
+                        dialog.setCancelable(false)
+                        dialog.btn_CancelUpdate.setOnClickListener(){
+                            callInsert.cancel()
+                        }
                         callInsert.enqueue(object: Callback<FileJson2>{
                             override fun onFailure(call: Call<FileJson2>, t: Throwable) {
-                                Log.d("AAAAA", t.message)
+                                Log.d("AAAAACreate Failure", t.message)
+                                dialog.dismiss()
                             }
                             override fun onResponse(
                                 call: Call<FileJson2>,
                                 response: Response<FileJson2>
                             ) {
                                 if(response.isSuccessful){
-                                    Log.d("AAAAA",response.body()?.message)
+                                    Log.d("AAAAACreate response",response.body()?.message + " " + response.body()?.toString())
+                                    Toast.makeText(applicationContext, response.body()?.message, Toast.LENGTH_SHORT).show()
                                 } else {
-                                    Log.d("AAAAAA",response.code().toString() + response.message().toString())
+                                    Log.d("AAAAAACreate response !",response.code().toString() + response.message().toString())
                                 }
+                                dialog.dismiss()
                             }
                         })
 
-                    } else if (BUTTON_TYPE == 1) {
-                        Toast.makeText(this, "day la save cua update", Toast.LENGTH_SHORT).show()
+                    } else if (BUTTON_TYPE == 1) {//  1 is change profile
+
                         val dialog = MaterialDialog(this)
                             .noAutoDismiss()
                             .customView(R.layout.dialog_processbar)
                         dialog.setCancelable(false)
                         dialog.show()
-                        window.setFlags(
-                            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-                        )
+
                         val call = RetrofitClient.instance.updateEmployee(
                             this.employee.id!!,
                             this.employee.employeeName!!,
@@ -111,43 +118,41 @@ class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
                             override fun onFailure(call: Call<FileJson2>, t: Throwable) {
                                 dialog.dismiss()
                                 if (call.isCanceled) {
-
-                                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
                                     Toast.makeText(
                                         applicationContext,
                                         "Cancel successful!",
                                         Toast.LENGTH_SHORT
                                     )
                                         .show()
+                                    Log.d("AAAAUpdate failure", "Cancel successful!")
+
                                 } else {
-                                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+
                                     Toast.makeText(
                                         applicationContext,
                                         "k luu duoc ${t.message}",
                                         Toast.LENGTH_LONG
                                     ).show()
-                                    Log.d("AAAA", t.message)
+                                    Log.d("AAAAUpdate failure", t.message)
                                 }
+                                dialog.dismiss()
 
                             }
                             override fun onResponse(call: Call<FileJson2>, response: Response<FileJson2>) {
                                 dialog.dismiss()
                                 if (response.isSuccessful) {
-                                    Log.d("AAAAA",response.body()?.message)
-                                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                                    Log.d("AAAAAUpdate",response.body()?.message + response.body()?.toString())
                                     Toast.makeText(
                                         applicationContext,
-                                        "luu thanh cong ${response.body()?.message}",
+                                         response.body()?.message,
                                         Toast.LENGTH_LONG
                                     )
                                         .show()
-//                                    val intent: Intent = Intent()
-//                                    setResult(Activity.RESULT_OK, intent)
-//                                    finish()
+                                    val intent: Intent = Intent()
+                                    setResult(Activity.RESULT_OK, intent)
+                                    finish()
                                 } else {
-                                    Log.d("AAAAAA",response.code().toString() + response.message().toString())
-                                    window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-                                    dialog.dismiss()
+                                    Log.d("AAAAAUpdate",response.code().toString() + " " + response.message())
                                     Toast.makeText(
                                         applicationContext,
                                         "k thanh cong ${response.message()}",
@@ -159,9 +164,9 @@ class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
 
                         })
                     }
-                    dialog.dismiss()
+
                 }
-                dialog.show()
+
 
             }
             btn_Cancel -> {
