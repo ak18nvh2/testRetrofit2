@@ -27,6 +27,7 @@ import retrofit2.Response
 class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
     private var BUTTON_TYPE = 0 //  1 is change profile, 2 is create new employee
     private var contactPost : ContactPost = ContactPost()
+    private var custom : Custom = Custom()
     val REQUEST_SELECT_IMAGE = 1111
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,17 +75,18 @@ class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_SELECT_IMAGE) {
             if (resultCode == Activity.RESULT_OK) {
-                this.contactPost.custom?.stringImage = data?.getData().toString()
-                img_AvatarCreateOrUpdate.setImageURI(Uri.parse(this.contactPost.custom?.stringImage))
+
+                this.custom?.stringImage = data?.data.toString()
+                img_AvatarCreateOrUpdate.setImageURI(Uri.parse( this.custom?.stringImage ))
             }
         }
     }
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     override fun onClick(v: View?) {
         when (v) {
-            img_AvatarCreateOrUpdate -> {
+            img_AvatarCreateOrUpdate ->
                 selectImage(img_AvatarCreateOrUpdate)
-            }
+
             btn_Save -> {
                 val dialogYesNo = MaterialDialog(this)
                     .noAutoDismiss()
@@ -96,7 +98,8 @@ class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
                     dialogYesNo.dismiss()
                 }
                 dialogYesNo.btn_AcceptDiaLogConFirm.setOnClickListener() {
-                    this.contactPost.custom?.stringAge = edt_InputAge.text.toString()
+                    this.custom?.stringAge = edt_InputAge.text.toString()
+                    this.contactPost.custom = this.custom
                     this.contactPost.lastName = edt_InputLastName.text.toString()
                     this.contactPost.firstName = edt_InputFirstName.text.toString()
                     this.contactPost.email = edt_InputEmail.text.toString()
