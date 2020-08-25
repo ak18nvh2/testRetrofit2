@@ -11,16 +11,16 @@ interface Api {
         ]
     )
     @GET("contacts/bookmark")
-    fun getContacts(): Call<FJson>
+    fun getContacts(): Call<FJsonGet>
 
 
-//    @Headers(
-//        value = ["Accept: application/json",
-//            "Content-type:application/json",
-//            "autopilotapikey:e2cff516881142c8b20fe3febf24d515"]
-//    )
-//    @POST("create")
-//    fun insertEmployee(@Body employee: Employee): Call<FJson>
+    @Headers(
+        value = ["Accept: application/json",
+            "Content-type:application/json",
+            "autopilotapikey:e2cff516881142c8b20fe3febf24d515"]
+    )
+    @POST("contact")
+    fun insertContact(@Body bodyPost: BodyPost): Call<Contact>
 //
 //
 //    @Headers(

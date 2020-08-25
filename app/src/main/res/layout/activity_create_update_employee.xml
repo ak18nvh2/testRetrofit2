@@ -7,10 +7,12 @@
     tools:context=".CreateAndUpdateEmployee">
     <ImageView
         android:id="@+id/img_AvatarCreateOrUpdate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:src="@mipmap/ic_launcher"
-        app:layout_constraintBottom_toTopOf="@id/edt_InputName"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true"
+        app:layout_constraintBottom_toTopOf="@id/edt_InputFirstName"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"></ImageView>
@@ -20,36 +22,78 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="20dp"
-        android:text="Name:"
+        android:text="First Name:"
         android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="@id/edt_InputName"
+        app:layout_constraintBottom_toBottomOf="@id/edt_InputFirstName"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@id/edt_InputName"></TextView>
+        app:layout_constraintTop_toTopOf="@id/edt_InputFirstName"></TextView>
 
     <EditText
-        android:id="@+id/edt_InputName"
+        android:id="@+id/edt_InputFirstName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="12dp"
-        android:hint="Type employee's name!"
-        app:layout_constraintBottom_toTopOf="@id/edt_InputAge"
+        app:layout_constraintBottom_toTopOf="@id/edt_InputLastName"
         app:layout_constraintLeft_toRightOf="@id/tv_NameCreateOrUpdate"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/img_AvatarCreateOrUpdate"></EditText>
 
     <EditText
+        android:id="@+id/edt_InputLastName"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintBottom_toTopOf="@+id/edt_InputEmail"
+        app:layout_constraintLeft_toRightOf="@id/tv_AgeCreateOrUpdate"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edt_InputFirstName"></EditText>
+
+    <TextView
+        android:id="@+id/tv_AgeCreateOrUpdate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
+        android:text="Last Name:"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="@id/edt_InputLastName"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/edt_InputLastName"></TextView>
+
+    <EditText
+        android:id="@+id/edt_InputEmail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="12dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintBottom_toTopOf="@id/edt_InputAge"
+        app:layout_constraintLeft_toRightOf="@id/tv_SalaryCreateOrUpdate"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/edt_InputLastName"></EditText>
+
+    <TextView
+        android:id="@+id/tv_SalaryCreateOrUpdate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="20dp"
+        android:text="Email:"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="@id/edt_InputEmail"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="@id/edt_InputEmail"></TextView>
+    <EditText
         android:id="@+id/edt_InputAge"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="12dp"
-        android:hint="Type employee's age!"
-        app:layout_constraintBottom_toTopOf="@+id/edt_InputSalary"
-        app:layout_constraintLeft_toRightOf="@id/tv_AgeCreateOrUpdate"
+        android:layout_marginTop="30dp"
+        app:layout_constraintBottom_toTopOf="@id/btn_Save"
+        app:layout_constraintLeft_toRightOf="@id/tv_Age"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edt_InputName"></EditText>
+        app:layout_constraintTop_toBottomOf="@id/edt_InputEmail"></EditText>
 
     <TextView
-        android:id="@+id/tv_AgeCreateOrUpdate"
+        android:id="@+id/tv_Age"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:paddingLeft="20dp"
@@ -57,30 +101,8 @@
         android:textSize="20dp"
         app:layout_constraintBottom_toBottomOf="@id/edt_InputAge"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@id/edt_InputAge"></TextView>
-
-    <EditText
-        android:id="@+id/edt_InputSalary"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="12dp"
-        android:layout_marginTop="30dp"
-        android:hint="Type employee's salary!"
-        app:layout_constraintBottom_toTopOf="@id/btn_Save"
-        app:layout_constraintLeft_toRightOf="@id/tv_SalaryCreateOrUpdate"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/edt_InputAge"></EditText>
-
-    <TextView
-        android:id="@+id/tv_SalaryCreateOrUpdate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingLeft="20dp"
-        android:text="Salary:"
-        android:textSize="20dp"
-        app:layout_constraintBottom_toBottomOf="@id/edt_InputSalary"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toTopOf="@id/edt_InputSalary"></TextView>
+        app:layout_constraintTop_toTopOf="@id/edt_InputAge"
+        ></TextView>
 
     <Button
         android:id="@+id/btn_Save"
@@ -91,7 +113,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/btn_Cancel"
-        app:layout_constraintTop_toBottomOf="@id/edt_InputSalary"></Button>
+        app:layout_constraintTop_toBottomOf="@id/edt_InputAge"></Button>
 
     <Button
         android:layout_width="wrap_content"

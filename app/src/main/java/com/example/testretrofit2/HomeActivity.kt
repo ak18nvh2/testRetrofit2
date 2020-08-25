@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,110 +24,108 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,
     ContactAdapter.IRecyclerViewWithHomeActivity {
     private var list: ArrayList<Contact>? = ArrayList<Contact>()
     private val REQUEST_HOME_TO_CREATE_OR_UPDATE = 10
-    var employeeAdapter: ContactAdapter? = null
+    var contactAdapter: ContactAdapter? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home)
-        var rvEmployees: RecyclerView = findViewById(R.id.rv_Employees)
-        employeeAdapter = ContactAdapter(this, this)
-        rvEmployees.setHasFixedSize(true)
-        rvEmployees.layoutManager = LinearLayoutManager(this)
+        var recyclerView: RecyclerView = findViewById(R.id.rv_Contact)
+        contactAdapter = ContactAdapter(this, this)
+        recyclerView.setHasFixedSize(true)
+        recyclerView.layoutManager = LinearLayoutManager(this)
 
-        list?.let { employeeAdapter?.setList(it) }
-        rvEmployees.adapter = employeeAdapter
-        btn_ReadData.setOnClickListener(this)
-        btn_CreateNewEmployee.setOnClickListener(this)
-       // readData()
+        list?.let { contactAdapter?.setList(it) }
+        recyclerView.adapter = contactAdapter
+        btn_ReloadData.setOnClickListener(this)
+        btn_CreateNewContact.setOnClickListener(this)
+        readData()
     }
 
     override fun onClick(v: View?) {
         when (v) {
-            btn_CreateNewEmployee -> {
+            btn_CreateNewContact -> {
                 var intent = Intent(this, CreateAndUpdateEmployee::class.java)
                 intent.putExtra("BUTTON", 2)
                 startActivityForResult(intent, REQUEST_HOME_TO_CREATE_OR_UPDATE)
             }
-            btn_ReadData -> {
+            btn_ReloadData -> {
                 readData()
-
             }
         }
     }
 
     private fun readData() {
-            this.list?.clear()
-            tv_ResponseCode.text = "Loading: "
-        val dialog = MaterialDialog(this)
+        this.list?.clear()
+        val dialogProcess = MaterialDialog(this)
             .noAutoDismiss()
             .customView(R.layout.dialog_processbar)
-        dialog.setCancelable(false)
+        dialogProcess.setCancelable(false)
         var callGet = RetrofitClient.instance.getContacts()
-        dialog.btn_CancelUpdate.setOnClickListener(){
+        dialogProcess.btn_CancelUpdate.setOnClickListener() {
             callGet.cancel()
-            dialog.dismiss()
+            dialogProcess.dismiss()
         }
-        dialog.show()
-            callGet.enqueue(object : Callback<FJson> {
-
-                override fun onFailure(call: Call<FJson>, t: Throwable) {
-                    dialog.dismiss()
-                    Toast.makeText(
-                        applicationContext,
-                        "co van de ${t.message}",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    tv_ResponseCode.text = "onFailure: " + t.message
-                    Log.d("AAAAARead Failure", t.message)
-
-
-
+        dialogProcess.show()
+        dialogProcess.btn_CancelUpdate.setOnClickListener(){
+            callGet.cancel()
+        }
+        callGet.enqueue(object : Callback<FJsonGet> {
+            override fun onFailure(call: Call<FJsonGet>, t: Throwable) {
+                dialogProcess.dismiss()
+                if(callGet.isCanceled){
+                    Toast.makeText(applicationContext, "Canceled successfully!", Toast.LENGTH_SHORT).show()
                 }
-
-                override fun onResponse(call: Call<FJson>, response: Response<FJson>) {
-                    dialog.dismiss()
-                    tv_ResponseCode.text = "response code: " + response.code().toString()
-                    if (response.isSuccessful) {
-                        list = response.body()?.contacts as ArrayList<Contact>?
-                        employeeAdapter?.setList(list!!)
-
-                    } else {
-                        Toast.makeText(
-                            applicationContext,
-                            "lam gi co gi," + response.code().toString(),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                        Log.d("AAAAARead response !", response.message() + response.code())
-                    }
-                }
+                btn_ReloadData.visibility = View.VISIBLE
+                Toast.makeText(
+                    applicationContext,
+                    "co van de ${t.message}",
+                    Toast.LENGTH_SHORT
+                ).show()
+                Log.d("AAAAARead Failure", t.message)
             }
 
-            )
+            override fun onResponse(call: Call<FJsonGet>, response: Response<FJsonGet>) {
+                dialogProcess.dismiss()
+                if (response.isSuccessful) {
+                    list = response.body()?.contacts as ArrayList<Contact>?
+                    contactAdapter?.setList(list!!)
+                    btn_ReloadData.visibility = View.INVISIBLE
+                } else {
+                    Toast.makeText(
+                        applicationContext,
+                        "lam gi co gi," + response.code().toString(),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    btn_ReloadData.visibility = View.VISIBLE
+                    Log.d("AAAAARead response !", response.message() + response.code())
+                }
+            }
+        }
 
+        )
 
 
     }
-//
+
+    //
     override fun doSomeThingOnClick(contact: Contact) {
-//        var intent = Intent(this, DetailActivity::class.java)
-//        var bundle = Bundle()
-//        bundle.putSerializable("EMPLOYEE", employee)
-//        intent.putExtras(bundle)
-//        startActivity(intent)
-    Toast.makeText(this, contact.email, Toast.LENGTH_LONG).show()
+        var intent = Intent(this, DetailActivity::class.java)
+        var bundle = Bundle()
+        bundle.putSerializable("CONTACT", contact)
+        intent.putExtras(bundle)
+        startActivity(intent)
     }
 
     override fun doSomeThingOnLongClick(contact: Contact) {
-        Toast.makeText(this, contact.contactId, Toast.LENGTH_LONG).show()
-    }
-//        val dialogSelect = MaterialDialog(this)
-//            .noAutoDismiss()
-//            .customView(R.layout.dialog_select)
-//
-//        dialogSelect.setCancelable(false)
-//        dialogSelect.show()
-//        dialogSelect.btn_CancelDialog.setOnClickListener() {
-//            dialogSelect.dismiss()
-//        }
+
+        val dialogSelect = MaterialDialog(this)
+            .noAutoDismiss()
+            .customView(R.layout.dialog_select)
+
+        dialogSelect.setCancelable(false)
+        dialogSelect.show()
+        dialogSelect.btn_CancelDialog.setOnClickListener() {
+            dialogSelect.dismiss()
+        }
 //        dialogSelect.btn_Delete.setOnClickListener() {
 //          // window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
 //            dialogSelect.dismiss()
@@ -185,24 +182,24 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,
 //
 //        }
 //        dialogSelect.btn_Change.setOnClickListener() {
-//            var intent = Intent(this, CreateAndUpdateEmployee::class.java)
-//            var bundle = Bundle()
-//            bundle.putSerializable("EMPLOYEE2", employee)
-//            intent.putExtras(bundle)
-//            intent.putExtra("BUTTON", 1)
-//            startActivityForResult(intent, REQUEST_HOME_TO_CREATE_OR_UPDATE)
-//            dialogSelect.dismiss()
-//        }
-//
-//    }
-//
-//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-//        super.onActivityResult(requestCode, resultCode, data)
-//        if (requestCode == REQUEST_HOME_TO_CREATE_OR_UPDATE) {
-//            if (resultCode == Activity.RESULT_OK) {
-//                Toast.makeText(this, "Saved successfully!", Toast.LENGTH_SHORT).show()
-//                readData()
-//            }
-//        }
-//    }
+////            var intent = Intent(this, CreateAndUpdateEmployee::class.java)
+////            var bundle = Bundle()
+////            bundle.putSerializable("EMPLOYEE2", employee)
+////            intent.putExtras(bundle)
+////            intent.putExtra("BUTTON", 1)
+////            startActivityForResult(intent, REQUEST_HOME_TO_CREATE_OR_UPDATE)
+////            dialogSelect.dismiss()
+////        }
+////
+////    }
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_HOME_TO_CREATE_OR_UPDATE) {
+            if (resultCode == Activity.RESULT_OK) {
+                Toast.makeText(this, "Saved successfully!", Toast.LENGTH_SHORT).show()
+                readData()
+            }
+        }
+    }
 }

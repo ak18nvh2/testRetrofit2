@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
 
 
 
-class FJson {
+class FJsonGet {
     @SerializedName("contacts")
     @Expose
     var contacts: List<Contact>? = null

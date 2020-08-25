@@ -3,14 +3,13 @@ package com.example.testretrofit2
 import com.google.gson.annotations.Expose
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 
-
-
-class Contact {
+class Contact : Serializable {
     @SerializedName("Email")
     @Expose
-    var email: String? = null
+    var  email: String? = null
 
     @SerializedName("created_at")
     @Expose
@@ -35,6 +34,10 @@ class Contact {
     @SerializedName("FirstName")
     @Expose
     var firstName: String? = null
+
+    @SerializedName("custom_fields")
+    @Expose
+    var customFields: List<CustomField>? = null
 
     @SerializedName("contact_id")
     @Expose
