@@ -9,13 +9,13 @@ import androidx.recyclerview.widget.RecyclerView
 
 
 
-class EmployeeAdapter(var mContext : Context, var iRecyclerViewWithHomeActivity: IRecyclerViewWithHomeActivity) : RecyclerView.Adapter<EmployeeAdapter.ViewHolder>() {
-    private var list : ArrayList<Employee>?= ArrayList<Employee>()
+class ContactAdapter(var mContext : Context, var iRecyclerViewWithHomeActivity: IRecyclerViewWithHomeActivity) : RecyclerView.Adapter<ContactAdapter.ViewHolder>() {
+    private var list : ArrayList<Contact>?= ArrayList<Contact>()
     class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView){
         val id : TextView = itemView.findViewById(R.id.tv_Id)
         val name : TextView = itemView.findViewById(R.id.tv_Name)
     }
-    fun setList(list : ArrayList<Employee>){
+    fun setList(list : ArrayList<Contact>){
         this.list = list
         notifyDataSetChanged()
     }
@@ -29,8 +29,8 @@ class EmployeeAdapter(var mContext : Context, var iRecyclerViewWithHomeActivity:
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.id.text = "ID: "+ list?.get(position)?.id
-        holder.name.text = "Name: "+list?.get(position)?.employeeName
+        holder.id.text = "ID: "+ list?.get(position)?.contactId
+        holder.name.text = "Name: "+list?.get(position)?.lastName + " " + list?.get(position)?.firstName
         holder.itemView.setOnClickListener(){
             iRecyclerViewWithHomeActivity.doSomeThingOnClick(list?.get(position)!!)
         }
@@ -40,7 +40,7 @@ class EmployeeAdapter(var mContext : Context, var iRecyclerViewWithHomeActivity:
         }
     }
     interface IRecyclerViewWithHomeActivity{
-        fun doSomeThingOnClick(employee: Employee)
-        fun doSomeThingOnLongClick(employee: Employee)
+        fun doSomeThingOnClick(contact: Contact)
+        fun doSomeThingOnLongClick(contact: Contact)
     }
 }

@@ -7,7 +7,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object RetrofitClient {
-    private const val BASE_URL = "http://dummy.restapiexample.com/api/v1/"
+    private const val BASE_URL = "https://private-amnesiac-8522d-autopilot.apiary-proxy.com/v1/"
 
     private val builder = OkHttpClient.Builder()
         .readTimeout(50000, TimeUnit.MILLISECONDS)

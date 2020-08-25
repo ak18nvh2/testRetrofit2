@@ -11,17 +11,17 @@ class DetailActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail)
 
-        var intent = intent
-        var bundle = intent.extras
-        if( bundle != null ){
-            var employee = bundle.getSerializable("EMPLOYEE") as Employee
-            tv_DetailAge.text = "Age: "+ employee.employeeAge?.toString()
-            tv_DetailName.text = "Name: "+ employee.employeeName
-            tv_DetailSalary.text = "Salary: "+ employee.employeeSalary?.toString()
-            tv_DetailID.text ="ID: "+ employee.id?.toString()
-        }
-        btn_BackDetail.setOnClickListener(){
-            finish()
-        }
+//        var intent = intent
+////        var bundle = intent.extras
+////        if( bundle != null ){
+////            var employee = bundle.getSerializable("EMPLOYEE") as Employee
+////            tv_DetailAge.text = "Age: "+ employee.employeeAge?.toString()
+////            tv_DetailName.text = "Name: "+ employee.employeeName
+////            tv_DetailSalary.text = "Salary: "+ employee.employeeSalary?.toString()
+////            tv_DetailID.text ="ID: "+ employee.id?.toString()
+////        }
+////        btn_BackDetail.setOnClickListener(){
+////            finish()
+////        }
     }
 }

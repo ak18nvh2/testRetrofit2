@@ -6,44 +6,27 @@ import retrofit2.http.*
 interface Api {
     @Headers(
         value = ["Accept: application/json",
-            "Content-type:application/json"]
+            "Content-type:application/json",
+            "autopilotapikey:e2cff516881142c8b20fe3febf24d515"
+        ]
     )
-    @GET("employees/")
-    fun getEmployees(): Call<FileJson>
+    @GET("contacts/bookmark")
+    fun getContacts(): Call<FJson>
 
 
-    @Headers(
-        value = ["Accept: application/json",
-            "Content-type:application/json"]
-    )
-    @POST("create")
-    fun insertEmployee(@Body employee: Employee): Call<FileJson2>
-
-    @Headers(
-        value = ["Accept: application/json",
-            "Content-type:application/json"]
-    )
-    @FormUrlEncoded
-    @PUT("update/{id}")
-    fun updateEmployee(
-        @Path("id") id: Int,
-        @Field("name") employeeName: String,
-        @Field("salary") employeeSalary: Int,
-        @Field("age") employeeAge: Int
-    ) : Call<FileJson2>
-
-    @Headers(
-        value = ["Accept: application/json",
-            "Content-type:application/json"]
-    )
-    @DELETE("delete/{id}")
-    fun deleteEmployee(@Path("id") id: Int): Call<FileJson3>
-
-
+//    @Headers(
+//        value = ["Accept: application/json",
+//            "Content-type:application/json",
+//            "autopilotapikey:e2cff516881142c8b20fe3febf24d515"]
+//    )
+//    @POST("create")
+//    fun insertEmployee(@Body employee: Employee): Call<FJson>
+//
+//
+//    @Headers(
+//        value = ["Accept: application/json",
+//            "Content-type:application/json"]
+//    )
+////    @DELETE("delete/{id}")
+////    fun deleteEmployee(@Path("id") id: Int): Call<FileJson3>
 }
-
-//fun insertEmployee(@Field("id") id : String,
-//                   @Field("employee_name") employeeName : String,
-//                   @Field("employee_salary") employeeSalary : String,
-//                   @Field("employee_age") employeeAge : String,
-//                   @Field("profile_image") profileImage : String ) : Call<String>
