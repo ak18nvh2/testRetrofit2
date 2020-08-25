@@ -98,7 +98,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,
             dialog.dismiss()
         }
         dialog.btn_Delete.setOnClickListener() {
-            Toast.makeText(applicationContext, "xoa ne", Toast.LENGTH_SHORT).show()
+
             dialog.dismiss()
         }
         dialog.btn_Change.setOnClickListener() {
