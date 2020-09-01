@@ -10,7 +10,7 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:src="@mipmap/ic_launcher"
-        android:scaleType="fitXY"
+        android:scaleType="centerInside"
         android:adjustViewBounds="true"
         app:layout_constraintBottom_toTopOf="@id/edt_InputFirstName"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -29,6 +29,7 @@
         app:layout_constraintTop_toTopOf="@id/edt_InputFirstName"></TextView>
 
     <EditText
+        android:inputType="text"
         android:id="@+id/edt_InputFirstName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -39,6 +40,7 @@
         app:layout_constraintTop_toBottomOf="@id/img_AvatarCreateOrUpdate"></EditText>
 
     <EditText
+        android:inputType="text"
         android:id="@+id/edt_InputLastName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -66,6 +68,7 @@
         android:layout_height="wrap_content"
         android:layout_marginLeft="12dp"
         android:layout_marginTop="30dp"
+        android:inputType="textEmailAddress"
         app:layout_constraintBottom_toTopOf="@id/edt_InputAge"
         app:layout_constraintLeft_toRightOf="@id/tv_SalaryCreateOrUpdate"
         app:layout_constraintRight_toRightOf="parent"
@@ -84,6 +87,7 @@
     <EditText
         android:id="@+id/edt_InputAge"
         android:layout_width="0dp"
+        android:inputType="number"
         android:layout_height="wrap_content"
         android:layout_marginLeft="12dp"
         android:layout_marginTop="30dp"

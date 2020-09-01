@@ -3,11 +3,10 @@ package com.example.testretrofit2
 import com.google.gson.annotations.Expose
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 
-
-
-class Custom {
+class Custom : Serializable{
     @SerializedName("string--image")
     @Expose
     var stringImage: String? = null

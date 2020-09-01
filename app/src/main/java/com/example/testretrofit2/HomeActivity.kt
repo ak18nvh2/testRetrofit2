@@ -45,6 +45,9 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,
             btn_CreateNewContact -> {
                 var intent = Intent(this, CreateAndUpdateEmployee::class.java)
                 intent.putExtra("BUTTON", 2)
+                var bundle = Bundle()
+                bundle.putSerializable("CONTACT_LIST", this.list)
+                intent.putExtras(bundle)
                 startActivityForResult(intent, REQUEST_HOME_TO_CREATE_OR_UPDATE)
             }
             btn_ReloadData -> {
@@ -55,6 +58,7 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,
 
     private fun readData() {
         this.list?.clear()
+        contactAdapter?.setList(this.list!!)
         val dialogProcess = MaterialDialog(this)
             .noAutoDismiss()
             .customView(R.layout.dialog_processbar)
@@ -126,73 +130,83 @@ class HomeActivity : AppCompatActivity(), View.OnClickListener,
         dialogSelect.btn_CancelDialog.setOnClickListener() {
             dialogSelect.dismiss()
         }
-//        dialogSelect.btn_Delete.setOnClickListener() {
-//          // window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-//            dialogSelect.dismiss()
-//            val dialogYesNo = MaterialDialog(this)
-//                .noAutoDismiss()
-//                .customView(R.layout.dialog_yes_no)
-//            dialogYesNo.show()
-//            dialogYesNo.setCancelable(false)
-//            dialogYesNo.tv_TitleOfCustomDialogConfirm.text = "Are you sure delete this?"
-//            dialogYesNo.btn_CancelDialogConfirm.setOnClickListener() {
-//                dialogYesNo.dismiss()
-//            }
-//            dialogYesNo.btn_AcceptDiaLogConFirm.setOnClickListener(){
-//                dialogYesNo.dismiss()
-//                val callDelete =  RetrofitClient.instance.deleteEmployee(employee.id!!)
-//                val dialog = MaterialDialog(this)
-//                    .noAutoDismiss()
-//                    .customView(R.layout.dialog_processbar)
-//                dialog.show()
-//                dialog.setCancelable(false)
-//                dialog.btn_CancelUpdate.setOnClickListener(){
-//                    callDelete.cancel()
-//                    dialog.dismiss()
-//                }
-//                callDelete.enqueue(object: Callback<FileJson3>{
-//
-//                    override fun onFailure(call: Call<FileJson3>, t: Throwable) {
-//                        dialog.dismiss()
-//                       // window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-//                        Toast.makeText(applicationContext, "fail ${t.message}", Toast.LENGTH_SHORT).show()
-//                        Log.d("AAAAAADelete Failure",t.message )
-//
-//                    }
-//
-//                    override fun onResponse(call: Call<FileJson3>, response: Response<FileJson3>) {
-//                        dialog.dismiss()
-//                        if(response.isSuccessful){
-//                            Log.d("AAAAAADelete Successful",response.body()?.message )
-//                           // window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-//                            Toast.makeText(applicationContext, response.body()?.message, Toast.LENGTH_SHORT).show()
-//                            readData()
-//                        } else {
-//                            Log.d("AAAAAADelete response !",response.message())
-//                            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-//                            Toast.makeText(applicationContext, "k xoa duoc ${response.message()} ${response.code()}", Toast.LENGTH_SHORT).show()
-//                        }
-//
-//                    }
-//
-//                })
-//
-//
-//            }
-//
-//        }
-//        dialogSelect.btn_Change.setOnClickListener() {
-////            var intent = Intent(this, CreateAndUpdateEmployee::class.java)
-////            var bundle = Bundle()
-////            bundle.putSerializable("EMPLOYEE2", employee)
-////            intent.putExtras(bundle)
-////            intent.putExtra("BUTTON", 1)
-////            startActivityForResult(intent, REQUEST_HOME_TO_CREATE_OR_UPDATE)
-////            dialogSelect.dismiss()
-////        }
-////
-////    }
+        dialogSelect.btn_Delete.setOnClickListener() {
+          // window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            dialogSelect.dismiss()
+            val dialogYesNo = MaterialDialog(this)
+                .noAutoDismiss()
+                .customView(R.layout.dialog_yes_no)
+            dialogYesNo.show()
+            dialogYesNo.setCancelable(false)
+            dialogYesNo.tv_TitleOfCustomDialogConfirm.text = "Are you sure delete this?"
+            dialogYesNo.btn_CancelDialogConfirm.setOnClickListener() {
+                dialogYesNo.dismiss()
+            }
+            dialogYesNo.btn_AcceptDiaLogConFirm.setOnClickListener(){
+                dialogYesNo.dismiss()
+                val callDelete =  RetrofitClient.instance.deleteContact(contact.contactId!!)
+                val dialog = MaterialDialog(this)
+                    .noAutoDismiss()
+                    .customView(R.layout.dialog_processbar)
+                dialog.show()
+                dialog.setCancelable(false)
+                dialog.btn_CancelUpdate.setOnClickListener(){
+                    callDelete.cancel()
+                    dialog.dismiss()
+                }
+                callDelete.enqueue(object: Callback<Unit>{
+
+                    override fun onFailure(call: Call<Unit>, t: Throwable) {
+                        dialog.dismiss()
+                       // window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                        Toast.makeText(applicationContext, "fail ${t.message}", Toast.LENGTH_SHORT).show()
+                        Log.d("AAAAAADelete Failure",t.message )
+
+                    }
+
+                    override fun onResponse(call: Call<Unit>, response: Response<Unit>) {
+                        dialog.dismiss()
+                        if(response.isSuccessful){
+                            Log.d("AAAAAADelete Successful",response.message() + " " + response.code() )
+                           // window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+                            Toast.makeText(applicationContext, "Deleted Successful!", Toast.LENGTH_SHORT).show()
+                            readData()
+                        } else {
+                            Log.d("AAAAAADelete response !",response.message() + " " + response.code())
+
+                            Toast.makeText(applicationContext, "Cann't delete! Please try again!", Toast.LENGTH_SHORT).show()
+                        }
+
+                    }
+
+                })
+
+
+            }
+
+        }
+        dialogSelect.btn_Change.setOnClickListener() {
+            var intent = Intent(this, CreateAndUpdateEmployee::class.java)
+            var bundle = Bundle()
+            var custom = Custom()
+            if(contact.customFields!!.size > 1) {
+                custom.stringImage = contact.customFields?.get(1)?.value
+            }
+
+            custom.stringAge = contact.customFields?.get(0)?.value
+            var contactPost = ContactPost()
+            contactPost.custom = custom
+            contactPost.email = contact.email
+            contactPost.firstName = contact.firstName
+            contactPost.lastName = contact.lastName
+            bundle.putSerializable("CONTACTPOST", contactPost)
+            intent.putExtras(bundle)
+            intent.putExtra("BUTTON", 1)
+            startActivityForResult(intent, REQUEST_HOME_TO_CREATE_OR_UPDATE)
+            dialogSelect.dismiss()
+        }
     }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_HOME_TO_CREATE_OR_UPDATE) {

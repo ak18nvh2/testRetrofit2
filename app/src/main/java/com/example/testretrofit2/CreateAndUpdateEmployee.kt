@@ -26,8 +26,9 @@ import retrofit2.Response
 
 class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
     private var BUTTON_TYPE = 0 //  1 is change profile, 2 is create new employee
-    private var contactPost : ContactPost = ContactPost()
-    private var custom : Custom = Custom()
+    private var contactPost: ContactPost = ContactPost()
+    private var custom: Custom = Custom()
+    private var arrayList: ArrayList<Contact> = ArrayList()
     val REQUEST_SELECT_IMAGE = 1111
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,7 +42,10 @@ class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
         edt_InputEmail.setText(contactPost.email)
         edt_InputFirstName.setText(contactPost.firstName)
         edt_InputLastName.setText(contactPost.lastName)
-        img_AvatarCreateOrUpdate.setImageURI(Uri.parse(contactPost.custom?.stringImage))
+        if ( contactPost.custom?.stringImage != null) {
+            img_AvatarCreateOrUpdate.setImageURI(Uri.parse(contactPost.custom?.stringImage))
+        }
+
 
     }
 
@@ -52,13 +56,18 @@ class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
         img_AvatarCreateOrUpdate.setOnClickListener(this)
         var intent = intent
         BUTTON_TYPE = intent.getIntExtra("BUTTON", 0)
-//        var bundle = intent.extras
-//        if (bundle != null) {
-//            if (BUTTON_TYPE == 1) {
-//                this.employee = bundle.getSerializable("EMPLOYEE2") as Employee
-//                setDefaultInformation()
-//            }
-//        }
+        var bundle = intent.extras
+        if (bundle != null) {
+            if (BUTTON_TYPE == 1) {
+                this.contactPost = bundle.getSerializable("CONTACTPOST") as ContactPost
+                setDefaultInformation()
+                edt_InputEmail.isFocusable = false
+            } else if (BUTTON_TYPE == 2) {
+                this.arrayList = bundle.getSerializable("CONTACT_LIST") as ArrayList<Contact>
+
+            }
+        }
+
     }
 
     @RequiresApi(Build.VERSION_CODES.KITKAT)
@@ -66,7 +75,7 @@ class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
         val i = Intent(
             Intent.ACTION_OPEN_DOCUMENT,
             MediaStore.Images.Media.EXTERNAL_CONTENT_URI
-        )
+        ).setType("image/*")
 
         startActivityForResult(i, REQUEST_SELECT_IMAGE)
     }
@@ -77,10 +86,108 @@ class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
             if (resultCode == Activity.RESULT_OK) {
 
                 this.custom?.stringImage = data?.data.toString()
-                img_AvatarCreateOrUpdate.setImageURI(Uri.parse( this.custom?.stringImage ))
+                img_AvatarCreateOrUpdate.setImageURI(Uri.parse(this.custom?.stringImage))
             }
         }
     }
+
+    private var isFinish = 0
+    fun checkFinish() {
+        if (isFinish == 1) {
+            val intent: Intent = Intent()
+            setResult(Activity.RESULT_OK, intent)
+            this.finish()
+        }
+
+    }
+
+    private fun insertContactToServer() {
+        val pattenEmail = Regex("[a-zA-Z0-9_.]+@[a-zA-Z]+\\.[a-zA-Z]+")
+        if (edt_InputFirstName.text.toString().trim() == "") {
+            Toast.makeText(applicationContext, "First Name must not be empty!", Toast.LENGTH_SHORT)
+                .show()
+        }  else if (edt_InputLastName.text.toString().trim() == "") {
+            Toast.makeText(applicationContext, "Last Name must not be empty!", Toast.LENGTH_SHORT)
+                .show()
+        }  else if (edt_InputEmail.text.toString().trim() == "") {
+            Toast.makeText(applicationContext, "Email must not be empty!", Toast.LENGTH_SHORT)
+                .show()
+        } else if (!pattenEmail.containsMatchIn(edt_InputEmail.text.toString())) {
+            Toast.makeText(applicationContext, "Must type correct email form!", Toast.LENGTH_SHORT)
+                .show()
+        } else if (edt_InputAge.text.toString().trim() == "") {
+            Toast.makeText(applicationContext, "Age must not be empty!", Toast.LENGTH_SHORT).show()
+        } else {
+            this.custom?.stringAge = edt_InputAge.text.toString().trim()
+            this.contactPost.custom = this.custom
+            this.contactPost.lastName = edt_InputLastName.text.toString().trim()
+            this.contactPost.firstName = edt_InputFirstName.text.toString().trim()
+            this.contactPost.email = edt_InputEmail.text.toString().trim()
+            var bodyPost = BodyPost()
+            bodyPost.contactPost = this.contactPost
+
+            val callInsert = RetrofitClient.instance.insertContact(bodyPost)
+            val dialog = MaterialDialog(this)
+                .noAutoDismiss()
+                .customView(R.layout.dialog_processbar)
+            dialog.show()
+            dialog.setCancelable(false)
+            dialog.btn_CancelUpdate.setOnClickListener() {
+                callInsert.cancel()
+            }
+            callInsert.enqueue(object : Callback<Contact> {
+                override fun onFailure(call: Call<Contact>, t: Throwable) {
+                    Log.d("AAAAACreate Failure", t.message)
+                    dialog.dismiss()
+                    if (callInsert.isCanceled) {
+                        Toast.makeText(
+                            applicationContext,
+                            "Canceled Successful!",
+                            Toast.LENGTH_SHORT
+                        )
+                            .show()
+                    } else {
+                        Toast.makeText(
+                            applicationContext,
+                            "Save failed! Please try again!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                }
+
+                override fun onResponse(
+                    call: Call<Contact>,
+                    response: Response<Contact>
+                ) {
+                    if (response.isSuccessful) {
+                        Toast.makeText(
+                            applicationContext,
+                            "Saved Successful!",
+                            Toast.LENGTH_SHORT
+                        )
+                            .show()
+                        isFinish = 1
+                        checkFinish()
+                        Log.d("AAAAACreate response", response.body()?.contactId)
+                    } else {
+                        Toast.makeText(
+                            applicationContext,
+                            "Save failed! Please try again!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        Log.d(
+                            "AAAAAACreate response !",
+                            response.code().toString() + response.message()
+                        )
+                    }
+                    dialog.dismiss()
+                }
+            })
+
+        }
+
+    }
+
     @RequiresApi(Build.VERSION_CODES.KITKAT)
     override fun onClick(v: View?) {
         when (v) {
@@ -98,115 +205,38 @@ class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
                     dialogYesNo.dismiss()
                 }
                 dialogYesNo.btn_AcceptDiaLogConFirm.setOnClickListener() {
-                    this.custom?.stringAge = edt_InputAge.text.toString()
-                    this.contactPost.custom = this.custom
-                    this.contactPost.lastName = edt_InputLastName.text.toString()
-                    this.contactPost.firstName = edt_InputFirstName.text.toString()
-                    this.contactPost.email = edt_InputEmail.text.toString()
-                    var bodyPost = BodyPost()
-                    bodyPost.contactPost = this.contactPost
                     dialogYesNo.dismiss()
+                    if (BUTTON_TYPE == 1) {
+                        if (this.contactPost.email != edt_InputEmail.text.toString()) {
+                            Toast.makeText(
+                                applicationContext,
+                                "Must not change Email!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                            edt_InputEmail.setText(this.contactPost.email)
 
-                    if (BUTTON_TYPE == 2) {//2 is create new employee
-                     val callInsert =   RetrofitClient.instance.insertContact(bodyPost)
-                        val dialog = MaterialDialog(this)
-                            .noAutoDismiss()
-                            .customView(R.layout.dialog_processbar)
-                        dialog.show()
-                        dialog.setCancelable(false)
-                        dialog.btn_CancelUpdate.setOnClickListener(){
-                            callInsert.cancel()
+                        } else {
+                            insertContactToServer()
                         }
-                        callInsert.enqueue(object: Callback<Contact>{
-                            override fun onFailure(call: Call<Contact>, t: Throwable) {
-                                Log.d("AAAAACreate Failure", t.message)
-                                dialog.dismiss()
+                    } else if (BUTTON_TYPE == 2) {
+                        var checkSameEmail = 0
+                        arrayList.forEachIndexed { index, contact ->
+                            if (contact.email == edt_InputEmail.text.toString()) {
+                                checkSameEmail = 1
                             }
-                            override fun onResponse(
-                                call: Call<Contact>,
-                                response: Response<Contact>
-                            ) {
-                                if(response.isSuccessful){
-                                    Log.d("AAAAACreate response",response.body()?.contactId)
-                                } else {
-                                    Log.d("AAAAAACreate response !",response.code().toString() + response.message().toString())
-                                }
-                                dialog.dismiss()
-                            }
-                        })
+                        }
+                        if (checkSameEmail == 1) {
+                            Toast.makeText(
+                                applicationContext,
+                                "This email already exists!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } else {
+                            insertContactToServer()
+                        }
+
                     }
-
-//                    } else if (BUTTON_TYPE == 1) {//  1 is change profile
-//
-//                        val dialog = MaterialDialog(this)
-//                            .noAutoDismiss()
-//                            .customView(R.layout.dialog_processbar)
-//                        dialog.setCancelable(false)
-//                        dialog.show()
-//
-//                        val call = RetrofitClient.instance.updateEmployee(
-//                            this.employee.id!!,
-//                            this.employee.employeeName!!,
-//                            this.employee.employeeSalary!!,
-//                            this.employee.employeeAge!!
-//                        )
-//                        dialog.btn_CancelUpdate.setOnClickListener() {
-//                            call.cancel()
-//                        }
-//                        call.enqueue(object : Callback<FileJson2> {
-//                            override fun onFailure(call: Call<FileJson2>, t: Throwable) {
-//                                dialog.dismiss()
-//                                if (call.isCanceled) {
-//                                    Toast.makeText(
-//                                        applicationContext,
-//                                        "Cancel successful!",
-//                                        Toast.LENGTH_SHORT
-//                                    )
-//                                        .show()
-//                                    Log.d("AAAAUpdate failure", "Cancel successful!")
-//
-//                                } else {
-//
-//                                    Toast.makeText(
-//                                        applicationContext,
-//                                        "k luu duoc ${t.message}",
-//                                        Toast.LENGTH_LONG
-//                                    ).show()
-//                                    Log.d("AAAAUpdate failure", t.message)
-//                                }
-//                                dialog.dismiss()
-//
-//                            }
-//                            override fun onResponse(call: Call<FileJson2>, response: Response<FileJson2>) {
-//                                dialog.dismiss()
-//                                if (response.isSuccessful) {
-//                                    Log.d("AAAAAUpdate",response.body()?.message + response.body()?.toString())
-//                                    Toast.makeText(
-//                                        applicationContext,
-//                                         response.body()?.message,
-//                                        Toast.LENGTH_LONG
-//                                    )
-//                                        .show()
-//                                    val intent: Intent = Intent()
-//                                    setResult(Activity.RESULT_OK, intent)
-//                                    finish()
-//                                } else {
-//                                    Log.d("AAAAAUpdate",response.code().toString() + " " + response.message())
-//                                    Toast.makeText(
-//                                        applicationContext,
-//                                        "k thanh cong ${response.message()}",
-//                                        Toast.LENGTH_LONG
-//                                    )
-//                                        .show()
-//                                }
-//                            }
-//
-//                        })
-//                    }
-
                 }
-
-
             }
             btn_Cancel -> {
                 finish()
@@ -214,6 +244,6 @@ class CreateAndUpdateEmployee : AppCompatActivity(), View.OnClickListener {
             btn_BackCreateOrUpdate -> {
                 finish()
             }
-     }
+        }
     }
 }

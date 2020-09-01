@@ -3,11 +3,10 @@ package com.example.testretrofit2
 import com.google.gson.annotations.Expose
 
 import com.google.gson.annotations.SerializedName
+import java.io.Serializable
 
 
-
-
-class CustomField {
+class CustomField : Serializable{
     @SerializedName("kind")
     @Expose
     var kind: String? = null
